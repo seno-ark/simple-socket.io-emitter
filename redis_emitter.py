@@ -7,53 +7,54 @@ import msgpack
 
 
 class Emitter:
-	EVENT_TYPE = 2
 
-	def __init__(self, host, port):
+    EVENT_TYPE = 2
 
-		self.uid = ''
-		self._room = None
-		self._nsp = None
+    def __init__(self, host, port):
 
-		# create redis client
-		self._client = redis.StrictRedis(host=host, port=port)
+        self.uid = ''
+        self._room = None
+        self._nsp = None
 
-
-	def room(self, room):
-		"""
-		Set Room
-		"""
-		self._room = room
-		return self
+        # create redis client
+        self._client = redis.StrictRedis(host=host, port=port)
 
 
-	def nsp(self, nsp):
-		"""
-		Set Namespace
-		"""
-		self._nsp = nsp
-		return self
+    def room(self, room):
+        """
+        Set Room
+        """
+        self._room = room
+        return self
 
 
-	def emit(self, *args):
-		"""
-		Emit
+    def nsp(self, nsp):
+        """
+        Set Namespace
+        """
+        self._nsp = nsp
+        return self
 
-		args:
-		- event_name
-		- payload
-		"""
 
-		if not self._nsp:
-			self._nsp = "/"
-		if not self._room:
-			self._room = ""
+    def emit(self, *args):
+        """
+        Emit
 
-		packet = {
-			'data': args,
-			'type': self.EVENT_TYPE
-		}
+        args:
+        - event_name
+        - payload
+        """
 
-		channel = "#".join(("socket.io", self._nsp, self._room, ""))
+        if not self._nsp:
+            self._nsp = "/"
+        if not self._room:
+            self._room = ""
 
-		self._client.publish(channel, msgpack.packb([self.uid, packet]))
+        packet = {
+            'data': args,
+            'type': self.EVENT_TYPE
+        }
+
+        channel = "#".join(("socket.io", self._nsp, self._room, ""))
+
+        self._client.publish(channel, msgpack.packb([self.uid, packet]))
