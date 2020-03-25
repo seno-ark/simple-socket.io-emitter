@@ -1,1 +1,1 @@
-# simple-socket.io-redis-emitter
+# simple-socket.io-emitter
